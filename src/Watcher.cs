@@ -136,7 +136,7 @@ public class Watcher : IDisposable
         switch (State)
         {
             case WatcherState.Neutral:
-                message.Subject = $"Rcommendation for {stock} - Hold";
+                message.Subject = $"Recommendation for {stock} - Hold";
                 message.Body = new TextPart("plain")
                 {
                     Text =
