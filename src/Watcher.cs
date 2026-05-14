@@ -34,11 +34,11 @@ public class Watcher : IDisposable
             useSsl: false,
             cancellation
         );
-        // await smtpClient.AuthenticateAsync(
-        //     config.ServerSettings.User,
-        //     config.ServerSettings.Password,
-        //     cancellation
-        // );
+        await smtpClient.AuthenticateAsync(
+            config.ServerSettings.User,
+            config.ServerSettings.Password,
+            cancellation
+        );
 
         var deserializationOptions = new JsonSerializerOptions
         {
