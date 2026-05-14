@@ -19,6 +19,9 @@ public static class Input
             emailPromt.DefaultValue(existingConfig.NotificationEmail);
         var notificationEmail = AnsiConsole.Prompt(emailPromt);
 
+        AnsiConsole.MarkupLine(
+            "[yellow]Note:[/] The default poll interval is set to 3 minutes to avoid hitting the Brapi API rate limit on the free tier."
+        );
         var pollIntervalPrompt = CreatePrompt<TimeSpan>("Poll Interval", "hh:mm:ss");
         // the Brapi API has a rate limit of 15000 requests per month on the free tier
         // which amounts to around one request every 179 seconds for a 31 day month
