@@ -82,7 +82,8 @@ public class Watcher : IDisposable
                         config.NotificationEmail,
                         stock,
                         price,
-                        threshold: State == WatcherState.ShouldSell ? sellPrice : buyPrice
+                        buyPrice,
+                        sellPrice
                     );
                 }
 
@@ -125,7 +126,8 @@ public class Watcher : IDisposable
         string email,
         string stock,
         decimal price,
-        decimal threshold
+        decimal buyPrice,
+        decimal sellPrice
     )
     {
         var message = new MimeMessage();
@@ -133,12 +135,34 @@ public class Watcher : IDisposable
         message.To.Add(new MailboxAddress(null, email));
 
         bool shouldSell = State == WatcherState.ShouldSell;
-        message.Subject = $"Recommendation for {stock} - {(shouldSell ? "Sell" : "Buy")}";
-        message.Body = new TextPart("plain")
+        switch (State)
         {
-            Text =
-                $"The current price of {stock} is {price}, which is {(shouldSell ? "above" : "below")} your {(shouldSell ? "sell" : "buy")} threshold of {threshold}",
-        };
+            case WatcherState.Neutral:
+                message.Subject = $"Rcommendation for {stock} - Hold";
+                message.Body = new TextPart("plain")
+                {
+                    Text =
+                        $"The current price of {stock} is {price}, which is between your buy and sell thresholds",
+                };
+                break;
+            case WatcherState.ShouldBuy:
+                message.Subject = $"Recommendation for {stock} - Buy";
+                message.Body = new TextPart("plain")
+                {
+                    Text =
+                        $"The current price of {stock} is {price}, which is bellow your buy threshold of {buyPrice}",
+                };
+                break;
+            case WatcherState.ShouldSell:
+                message.Subject = $"Recommendation for {stock} - Sell";
+                message.Body = new TextPart("plain")
+                {
+                    Text =
+                        $"The current price of {stock} is {price}, which is above your sell threshold of {sellPrice}",
+                };
+
+                break;
+        }
 
         return smtpClient.SendAsync(message);
     }
