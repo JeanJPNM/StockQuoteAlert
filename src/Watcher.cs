@@ -134,7 +134,6 @@ public class Watcher : IDisposable
         message.From.Add(new MailboxAddress("Stock Quote Alert", "noreply@stockquote.dev"));
         message.To.Add(new MailboxAddress(null, email));
 
-        bool shouldSell = State == WatcherState.ShouldSell;
         switch (State)
         {
             case WatcherState.Neutral:
