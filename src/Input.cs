@@ -36,6 +36,8 @@ public static class Input
             portPrompt.DefaultValue(existingConfig.ServerSettings.Port);
         var port = AnsiConsole.Prompt(portPrompt);
 
+        var useSsl = AnsiConsole.Confirm("Use SSL for SMTP connection?");
+
         var userPrompt = CreatePrompt<string>("SMTP User");
         if (existingConfig != null)
             userPrompt.DefaultValue(existingConfig.ServerSettings.User);
@@ -61,7 +63,7 @@ public static class Input
             BrapiApiKey = apiKey,
             NotificationEmail = notificationEmail,
             PollInterval = pollInterval,
-            ServerSettings = new SmtpOptions(hostName, port, user, password),
+            ServerSettings = new SmtpOptions(hostName, port, useSsl, user, password),
         };
     }
 }

@@ -34,7 +34,7 @@ public class Watcher : IDisposable
         await smtpClient.ConnectAsync(
             config.ServerSettings.HostName,
             config.ServerSettings.Port,
-            useSsl: false,
+            config.ServerSettings.UseSsl,
             cancellation
         );
         await smtpClient.AuthenticateAsync(

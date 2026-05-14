@@ -37,4 +37,4 @@ public class Config
     }
 }
 
-public record SmtpOptions(string HostName, int Port, string User, string Password);
+public record SmtpOptions(string HostName, int Port, bool UseSsl, string User, string Password);
