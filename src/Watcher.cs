@@ -19,6 +19,9 @@ public class Watcher : IDisposable
     private bool hasSentError = false;
     public WatcherState State { get; set; } = WatcherState.Neutral;
 
+    // I could probably isolate this into an IAsyncEnumerable of stock prices,
+    // but it seems like overengineering since this is only used once
+    // and the code isn't that complex
     public async Task Run(
         Config config,
         string stock,
@@ -51,10 +54,8 @@ public class Watcher : IDisposable
             {
                 var response = await RequestStockData(stock, deserializationOptions, cancellation);
 
-                if (response is BrapiErrorResponse errorResponse)
+                if (response is BrapiErrorResponse errorResponse && !hasSentError)
                 {
-                    if (hasSentError)
-                        continue;
                     hasSentError = true;
                     await SendErrorEmail(config.NotificationEmail);
                     Console.Error.WriteLine(
@@ -71,20 +72,18 @@ public class Watcher : IDisposable
                         _ => WatcherState.Neutral,
                     };
 
-                    if (nextState == State)
-                        continue;
+                    if (nextState != State)
+                    {
+                        State = nextState;
 
-                    State = nextState;
-                    if (State == WatcherState.Neutral)
-                        continue;
-
-                    await SendRecommendationEmail(
-                        config.NotificationEmail,
-                        stock,
-                        price,
-                        buyPrice,
-                        sellPrice
-                    );
+                        await SendRecommendationEmail(
+                            config.NotificationEmail,
+                            stock,
+                            price,
+                            buyPrice,
+                            sellPrice
+                        );
+                    }
                 }
 
                 await Task.Delay(config.PollInterval, cancellation);
