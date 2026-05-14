@@ -46,6 +46,11 @@ public static class Input
             passwordPrompt.DefaultValue(existingConfig.ServerSettings.Password);
         var password = AnsiConsole.Prompt(passwordPrompt);
 
+        // IA usada para gerar mensagem de aviso sobre a chave de API do Brapi
+        if (existingConfig == null)
+            AnsiConsole.MarkupLine(
+                "[yellow]Note:[/] The Brapi API key is required to fetch stock data. You can obtain a free API key by registering at [blue link=https://brapi.dev/]Brapi's website[/]."
+            );
         var apiKeyPrompt = new TextPrompt<string>("Brapi API Key").Secret();
         if (existingConfig != null)
             apiKeyPrompt.DefaultValue(existingConfig.BrapiApiKey);
