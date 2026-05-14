@@ -4,29 +4,6 @@ namespace StockQuoteAlert;
 
 public static class Input
 {
-    private static T ReadConfigValue<T>(
-        string prompt,
-        string? hint,
-        bool hasDefault,
-        Func<string?, T> parse
-    )
-    {
-        string hintSuffix = string.IsNullOrEmpty(hint) ? "" : $" [{hint}]";
-        string suffix = hasDefault ? " (unchanged)" : "";
-        string? input;
-
-        do
-        {
-            Console.Write($"{prompt}{hintSuffix}{suffix}: ");
-            input = Console.ReadLine();
-        } while (!hasDefault && string.IsNullOrWhiteSpace(input));
-
-        if (string.IsNullOrWhiteSpace(input))
-            return parse(null);
-
-        return parse(input);
-    }
-
     private static TextPrompt<T> CreatePrompt<T>(string prompt, string? format = null)
     {
         if (string.IsNullOrEmpty(format))
