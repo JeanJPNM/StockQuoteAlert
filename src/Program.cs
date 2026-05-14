@@ -32,10 +32,19 @@ internal class WatchCommand : Command<WatchCommand.Settings>
         CancellationToken cancellation
     )
     {
-        Console.WriteLine($"Stock: {settings.Stock}");
-        Console.WriteLine($"Sell price: {settings.SellPrice:F}");
-        Console.WriteLine($"Buy price: {settings.BuyPrice:F}");
-        Console.Write(System.Text.Json.JsonSerializer.Serialize(Config.Load()));
+        Config? config = Config.Load();
+        if (config == null)
+        {
+            Console.Error.WriteLine(
+                "No configuration found. Please run 'configure' command first."
+            );
+            return 1;
+        }
+
+        using Watcher watcher = new();
+        watcher
+            .Run(config, settings.Stock, settings.BuyPrice, settings.SellPrice, cancellation)
+            .Wait();
         return 0;
     }
 }
@@ -52,11 +61,6 @@ internal class ConfigureCommand : Command<ConfigureCommand.Settings>
     {
         Config config = Input.PromptConfigValues(Config.Load());
         Config.Write(config);
-        // Console.WriteLine($"Email de notificação: {config.NotificationEmail}");
-        // Console.WriteLine($"Intervalo de consulta: {config.PollInterval}");
-        // Console.WriteLine($"SMTP Host: {config.ServerSettings.HostName}");
-        // Console.WriteLine($"SMTP Port: {config.ServerSettings.Port}");
-        // Console.WriteLine($"SMTP User: {config.ServerSettings.User}");
         return 0;
     }
 }

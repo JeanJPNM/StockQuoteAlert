@@ -14,9 +14,7 @@ public class BrapiQuoteData
 
 public class BrapiQuoteResponse : BrapiResponse
 {
-    public required string Symbol { get; set; }
-    public required decimal Price { get; set; }
-
+    public required DateTime RequestedAt { get; set; }
     public required List<BrapiQuoteData> Results { get; set; }
 }
 
