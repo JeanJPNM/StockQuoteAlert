@@ -41,6 +41,11 @@ internal class WatchCommand : Command<WatchCommand.Settings>
             return 1;
         }
 
+        Console.WriteLine(
+            $"Watching stock {settings.Stock} with buy price {settings.BuyPrice} and sell price {settings.SellPrice}"
+        );
+        Console.WriteLine("Press Ctrl+C to close the program");
+
         using Watcher watcher = new();
         watcher
             .Run(config, settings.Stock, settings.BuyPrice, settings.SellPrice, cancellation)
