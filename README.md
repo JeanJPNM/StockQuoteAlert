@@ -6,6 +6,8 @@ notifying you when they fall bellow/rise above certain thresholds.
 
 ## Usage
 
+This project required .NET 8 or above.
+
 First you must configure the application, run the following command on the project's directory and enter the requested values. The configuration file will be placed in that same directory.
 
 ```sh
