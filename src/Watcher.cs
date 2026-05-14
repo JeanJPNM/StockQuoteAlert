@@ -37,11 +37,17 @@ public class Watcher : IDisposable
             config.ServerSettings.UseSsl,
             cancellation
         );
-        await smtpClient.AuthenticateAsync(
-            config.ServerSettings.User,
-            config.ServerSettings.Password,
-            cancellation
-        );
+        if (
+            !string.IsNullOrEmpty(config.ServerSettings.User)
+            && !string.IsNullOrEmpty(config.ServerSettings.Password)
+        )
+        {
+            await smtpClient.AuthenticateAsync(
+                config.ServerSettings.User,
+                config.ServerSettings.Password,
+                cancellation
+            );
+        }
 
         var deserializationOptions = new JsonSerializerOptions
         {

@@ -41,15 +41,20 @@ public static class Input
 
         var useSsl = AnsiConsole.Confirm("Use SSL for SMTP connection?");
 
-        var userPrompt = CreatePrompt<string>("SMTP User");
-        if (existingConfig != null)
-            userPrompt.DefaultValue(existingConfig.ServerSettings.User);
-        var user = AnsiConsole.Prompt(userPrompt);
+        var user = "";
+        var password = "";
+        if (AnsiConsole.Confirm("Use SMTP authentication?"))
+        {
+            var userPrompt = CreatePrompt<string>("SMTP User").AllowEmpty();
+            if (existingConfig != null)
+                userPrompt.DefaultValue(existingConfig.ServerSettings.User);
+            user = AnsiConsole.Prompt(userPrompt);
 
-        var passwordPrompt = new TextPrompt<string>("SMTP Password").Secret();
-        if (existingConfig != null)
-            passwordPrompt.DefaultValue(existingConfig.ServerSettings.Password);
-        var password = AnsiConsole.Prompt(passwordPrompt);
+            var passwordPrompt = new TextPrompt<string>("SMTP Password").Secret().AllowEmpty();
+            if (existingConfig != null)
+                passwordPrompt.DefaultValue(existingConfig.ServerSettings.Password);
+            password = AnsiConsole.Prompt(passwordPrompt);
+        }
 
         // IA usada para gerar mensagem de aviso sobre a chave de API do Brapi
         if (existingConfig == null)
